@@ -556,6 +556,48 @@ section {
   margin-bottom: var(--space-md);
 }
 
+.beach-selector {
+  margin-bottom: var(--space-md);
+}
+
+.beach-dropdown {
+  width: 100%;
+  padding: var(--space-xs) var(--space-sm);
+  border: 2px solid rgba(0, 119, 190, 0.3);
+  border-radius: var(--border-radius-sm);
+  background: var(--white);
+  font-size: var(--fs-sm);
+  font-family: var(--font-family-primary);
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.beach-dropdown:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(0, 119, 190, 0.2);
+}
+
+.beach-dropdown:hover {
+  border-color: var(--primary-blue);
+}
+
+#beach-info {
+  margin-bottom: var(--space-md);
+}
+
+#beach-info p {
+  margin-bottom: var(--space-xs);
+  line-height: 1.4;
+}
+
+.beach-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
 .btn-sm {
   padding: var(--space-xs) var(--space-sm);
   font-size: var(--fs-sm);
@@ -853,6 +895,16 @@ section {
     left: auto;
     max-width: none;
     margin-top: var(--space-md);
+  }
+  
+  .beach-actions {
+    flex-direction: row;
+    gap: var(--space-xs);
+  }
+  
+  .beach-actions .btn {
+    flex: 1;
+    font-size: var(--fs-xs);
   }
   
   .map-controls {

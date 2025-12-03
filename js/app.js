@@ -671,6 +671,9 @@ class ShoreSquadApp {
       // Initialize map functionality
       initializeMap();
       
+      // Initialize beach selection
+      initializeBeachSelection();
+      
       // Mark as initialized
       this.isInitialized = true;
       
@@ -808,10 +811,9 @@ class ShoreSquadApp {
           this.currentLocation = await GeolocationService.getCurrentPosition();
           await this.loadWeatherData();
           
-          // Open Google Maps with directions from user location to cleanup site
-          const cleanupLat = 1.381497;
-          const cleanupLng = 103.955574;
-          const mapsUrl = `https://www.google.com/maps/dir/${this.currentLocation.lat},${this.currentLocation.lng}/${cleanupLat},${cleanupLng}`;
+          // Open Google Maps with directions from user location to selected beach
+          const beach = SINGAPORE_BEACHES[currentBeach];
+          const mapsUrl = `https://www.google.com/maps/dir/${this.currentLocation.lat},${this.currentLocation.lng}/${beach.coordinates.lat},${beach.coordinates.lng}`;
           window.open(mapsUrl, '_blank');
           
           Utils.showToast('Opening directions to cleanup location!', 'success');
@@ -1036,6 +1038,162 @@ style.textContent = `
 document.head.appendChild(style);
 
 // ===================================
+// Beach Locations Data
+// ===================================
+
+const SINGAPORE_BEACHES = {
+  'pasir-ris': {
+    name: 'Pasir Ris Beach',
+    coordinates: { lat: 1.381497, lng: 103.955574 },
+    description: 'Street View Asia Location',
+    features: ['Family-friendly', 'Large area', 'Easy access'],
+    mapUrl: 'https://maps.google.com/maps?width=100%25&height=400&hl=en&q=1.381497,103.955574+(Pasir%20Ris%20Beach%20Cleanup)&t=&z=16&ie=UTF8&iwloc=B&output=embed'
+  },
+  'east-coast': {
+    name: 'East Coast Park Beach',
+    coordinates: { lat: 1.3010, lng: 103.9124 },
+    description: 'Popular recreational beach with cycling path',
+    features: ['Cycling path', 'BBQ pits', 'High foot traffic'],
+    mapUrl: 'https://maps.google.com/maps?width=100%25&height=400&hl=en&q=1.3010,103.9124+(East%20Coast%20Park%20Beach%20Cleanup)&t=&z=16&ie=UTF8&iwloc=B&output=embed'
+  },
+  'palawan': {
+    name: 'Palawan Beach, Sentosa',
+    coordinates: { lat: 1.2494, lng: 103.8303 },
+    description: 'Southernmost point of continental Asia',
+    features: ['Tourist area', 'Suspension bridge', 'Clear waters'],
+    mapUrl: 'https://maps.google.com/maps?width=100%25&height=400&hl=en&q=1.2494,103.8303+(Palawan%20Beach%20Sentosa%20Cleanup)&t=&z=16&ie=UTF8&iwloc=B&output=embed'
+  },
+  'changi': {
+    name: 'Changi Beach',
+    coordinates: { lat: 1.3890, lng: 103.9834 },
+    description: 'Historic beach with coastal boardwalk',
+    features: ['Historic significance', 'Boardwalk', 'Mangrove views'],
+    mapUrl: 'https://maps.google.com/maps?width=100%25&height=400&hl=en&q=1.3890,103.9834+(Changi%20Beach%20Cleanup)&t=&z=16&ie=UTF8&iwloc=B&output=embed'
+  }
+};
+
+let currentBeach = 'pasir-ris';
+
+// ===================================
+// Beach Selection Functions
+// ===================================
+
+// Change beach location when user selects from dropdown
+function changeBeachLocation() {
+  const select = document.getElementById('beach-select');
+  if (!select) return;
+  
+  const selectedBeach = select.value;
+  const beach = SINGAPORE_BEACHES[selectedBeach];
+  
+  if (!beach) return;
+  
+  currentBeach = selectedBeach;
+  
+  // Update map
+  const mapFrame = document.getElementById('beach-map');
+  if (mapFrame) {
+    mapFrame.src = beach.mapUrl;
+  }
+  
+  // Update info display
+  const beachInfo = document.getElementById('beach-info');
+  if (beachInfo) {
+    beachInfo.innerHTML = `
+      <p><strong>${beach.name}</strong></p>
+      <p>📅 Coordinates: ${beach.coordinates.lat}, ${beach.coordinates.lng}</p>
+      <p>🏖️ ${beach.description}</p>
+      <p>✨ ${beach.features.join(', ')}</p>
+    `;
+  }
+  
+  // Store selection in local storage
+  StorageManager.set('selected-beach', selectedBeach);
+  
+  Utils.showToast(`Switched to ${beach.name}`, 'success');
+}
+
+// Get directions to selected beach
+function getDirections() {
+  const beach = SINGAPORE_BEACHES[currentBeach];
+  if (!beach) return;
+  
+  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${beach.coordinates.lat},${beach.coordinates.lng}`;
+  window.open(mapsUrl, '_blank');
+  
+  Utils.showToast(`Opening directions to ${beach.name}`, 'info');
+}
+
+// Share beach location with crew
+function shareLocation() {
+  const beach = SINGAPORE_BEACHES[currentBeach];
+  if (!beach) return;
+  
+  const shareText = `Join our beach cleanup at ${beach.name}! 🌊\n📍 ${beach.description}\n📅 Coordinates: ${beach.coordinates.lat}, ${beach.coordinates.lng}\n🗺️ https://www.google.com/maps/place/${beach.coordinates.lat},${beach.coordinates.lng}`;
+  
+  if (navigator.share) {
+    navigator.share({
+      title: 'ShoreSquad Beach Cleanup',
+      text: shareText,
+      url: window.location.href
+    }).catch(err => {
+      console.log('Share failed:', err);
+      copyToClipboard(shareText);
+    });
+  } else {
+    copyToClipboard(shareText);
+  }
+}
+
+// Copy text to clipboard
+function copyToClipboard(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      Utils.showToast('Location details copied to clipboard!', 'success');
+    }).catch(() => {
+      fallbackCopyTextToClipboard(text);
+    });
+  } else {
+    fallbackCopyTextToClipboard(text);
+  }
+}
+
+// Fallback copy function for older browsers
+function fallbackCopyTextToClipboard(text) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.style.position = 'fixed';
+  textArea.style.left = '-999999px';
+  textArea.style.top = '-999999px';
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  
+  try {
+    document.execCommand('copy');
+    Utils.showToast('Location details copied to clipboard!', 'success');
+  } catch (err) {
+    Utils.showToast('Please copy the location details manually', 'info');
+    console.log('Copy failed:', err);
+  }
+  
+  document.body.removeChild(textArea);
+}
+
+// Initialize beach selection from stored preference
+function initializeBeachSelection() {
+  const savedBeach = StorageManager.get('selected-beach');
+  if (savedBeach && SINGAPORE_BEACHES[savedBeach]) {
+    currentBeach = savedBeach;
+    const select = document.getElementById('beach-select');
+    if (select) {
+      select.value = savedBeach;
+      changeBeachLocation();
+    }
+  }
+}
+
+// ===================================
 // Global Map Functions
 // ===================================
 
@@ -1100,6 +1258,10 @@ function initializeMap() {
 // Add to window for global access
 window.toggleMapView = toggleMapView;
 window.initializeMap = initializeMap;
+window.changeBeachLocation = changeBeachLocation;
+window.getDirections = getDirections;
+window.shareLocation = shareLocation;
+window.initializeBeachSelection = initializeBeachSelection;
 
 // Export for potential module usage
 if (typeof module !== 'undefined' && module.exports) {

@@ -123,16 +123,32 @@
                         title="Next Beach Cleanup Location - Pasir Ris">
                     </iframe>
                     
-                    <!-- Cleanup Location Info Overlay -->
+                    <!-- Beach Selection and Info Overlay -->
                     <div class="cleanup-info-overlay">
                         <div class="cleanup-info-card">
-                            <h4>📍 Next Cleanup Location</h4>
-                            <p><strong>Pasir Ris Beach</strong></p>
-                            <p>📅 Coordinates: 1.381497, 103.955574</p>
-                            <p>🏖️ Street View Asia Location</p>
-                            <button class="btn btn-primary btn-sm" onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=1.381497,103.955574', '_blank')" aria-label="Get directions to Pasir Ris cleanup location">
-                                🧭 Get Directions
-                            </button>
+                            <h4>📍 Select Cleanup Location</h4>
+                            <div class="beach-selector">
+                                <label for="beach-select" class="sr-only">Choose beach for cleanup</label>
+                                <select id="beach-select" class="beach-dropdown" onchange="changeBeachLocation()">
+                                    <option value="pasir-ris">Pasir Ris Beach (Current)</option>
+                                    <option value="east-coast">East Coast Park Beach</option>
+                                    <option value="palawan">Palawan Beach, Sentosa</option>
+                                    <option value="changi">Changi Beach</option>
+                                </select>
+                            </div>
+                            <div id="beach-info">
+                                <p><strong>Pasir Ris Beach</strong></p>
+                                <p>📅 Coordinates: 1.381497, 103.955574</p>
+                                <p>🏖️ Street View Asia Location</p>
+                            </div>
+                            <div class="beach-actions">
+                                <button class="btn btn-primary btn-sm" id="directions-btn" onclick="getDirections()" aria-label="Get directions to selected cleanup location">
+                                    🧭 Get Directions
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="shareLocation()" aria-label="Share cleanup location with crew">
+                                    📤 Share Location
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
