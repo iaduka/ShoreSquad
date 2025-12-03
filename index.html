@@ -108,10 +108,31 @@
             <div class="container">
                 <h2 id="map-title" class="section-title">Find Your Beach 🏖️</h2>
                 <div class="map-container">
-                    <div id="beach-map" class="map-placeholder" role="img" aria-label="Interactive map showing nearby beaches and cleanup locations">
-                        <div class="map-loading">
-                            <div class="loading-spinner" aria-hidden="true"></div>
-                            <p>Loading beach locations...</p>
+                    <!-- Google Maps Embed for Pasir Ris Beach Cleanup -->
+                    <iframe 
+                        id="beach-map"
+                        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6djs2FlnXKqrkDM&q=1.381497,103.955574&zoom=16&maptype=satellite&language=en&region=SG"
+                        width="100%" 
+                        height="400" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        role="img" 
+                        aria-label="Google Maps showing Pasir Ris Beach cleanup location at coordinates 1.381497, 103.955574"
+                        title="Next Beach Cleanup Location - Pasir Ris">
+                    </iframe>
+                    
+                    <!-- Cleanup Location Info Overlay -->
+                    <div class="cleanup-info-overlay">
+                        <div class="cleanup-info-card">
+                            <h4>📍 Next Cleanup Location</h4>
+                            <p><strong>Pasir Ris Beach</strong></p>
+                            <p>📅 Coordinates: 1.381497, 103.955574</p>
+                            <p>🏖️ Street View Asia Location</p>
+                            <button class="btn btn-primary btn-sm" onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=1.381497,103.955574', '_blank')" aria-label="Get directions to Pasir Ris cleanup location">
+                                🧭 Get Directions
+                            </button>
                         </div>
                     </div>
                     
@@ -119,8 +140,11 @@
                         <button class="btn btn-icon" id="locate-btn" aria-label="Center map on my location">
                             📍 My Location
                         </button>
-                        <button class="btn btn-icon" id="filter-btn" aria-label="Filter beach locations">
-                            🔍 Filter
+                        <button class="btn btn-icon" id="view-satellite" onclick="document.getElementById('beach-map').src = document.getElementById('beach-map').src.replace('maptype=roadmap', 'maptype=satellite')" aria-label="Switch to satellite view">
+                            🛰️ Satellite
+                        </button>
+                        <button class="btn btn-icon" id="view-terrain" onclick="document.getElementById('beach-map').src = document.getElementById('beach-map').src.replace('maptype=satellite', 'maptype=terrain')" aria-label="Switch to terrain view">
+                            🗻 Terrain
                         </button>
                     </div>
                 </div>

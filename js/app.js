@@ -804,8 +804,14 @@ class ShoreSquadApp {
           Utils.showToast('Getting your location...', 'info');
           this.currentLocation = await GeolocationService.getCurrentPosition();
           await this.loadWeatherData();
-          this.loadMapData();
-          Utils.showToast('Location updated!', 'success');
+          
+          // Open Google Maps with directions from user location to cleanup site
+          const cleanupLat = 1.381497;
+          const cleanupLng = 103.955574;
+          const mapsUrl = `https://www.google.com/maps/dir/${this.currentLocation.lat},${this.currentLocation.lng}/${cleanupLat},${cleanupLng}`;
+          window.open(mapsUrl, '_blank');
+          
+          Utils.showToast('Opening directions to cleanup location!', 'success');
         } catch (error) {
           Utils.showToast('Location access denied', 'error');
         }
@@ -837,22 +843,25 @@ class ShoreSquadApp {
   }
 
   loadMapData() {
+    // Map is now embedded directly, but we can update the info overlay
     const mapContainer = document.getElementById('beach-map');
     if (mapContainer) {
-      // Simulate loading beaches near current location
-      setTimeout(() => {
-        mapContainer.innerHTML = `
-          <div class="map-content">
-            <p>🏖️ Nearby Beach Cleanup Spots</p>
-            <div class="beach-list">
-              <div class="beach-item">📍 Redondo Beach - 0.5 miles</div>
-              <div class="beach-item">📍 Manhattan Beach - 1.2 miles</div>
-              <div class="beach-item">📍 Hermosa Beach - 2.1 miles</div>
-            </div>
-          </div>
-        `;
-      }, 1000);
+      Utils.showToast('Map loaded: Pasir Ris Beach cleanup location', 'success');
+      
+      // Update any dynamic content related to the map
+      this.updateCleanupInfo();
     }
+  }
+
+  updateCleanupInfo() {
+    // Add any dynamic updates to the cleanup information
+    const now = new Date();
+    const cleanupDate = new Date();
+    cleanupDate.setDate(now.getDate() + 7); // Next week
+    
+    console.log(`Next cleanup scheduled for: ${cleanupDate.toLocaleDateString()}`);
+    console.log('Location: Pasir Ris Beach, Singapore');
+    console.log('Coordinates: 1.381497, 103.955574');
   }
 
   showInviteModal() {
