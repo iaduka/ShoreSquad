@@ -111,7 +111,7 @@
                     <!-- Google Maps Embed for Pasir Ris Beach Cleanup -->
                     <iframe 
                         id="beach-map"
-                        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6djs2FlnXKqrkDM&q=1.381497,103.955574&zoom=16&maptype=satellite&language=en&region=SG"
+                        src="https://maps.google.com/maps?width=100%25&amp;height=400&amp;hl=en&amp;q=1.381497,103.955574+(Next%20Cleanup%20-%20Pasir%20Ris%20Beach)&amp;t=&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
                         width="100%" 
                         height="400" 
                         style="border:0;" 
@@ -140,11 +140,14 @@
                         <button class="btn btn-icon" id="locate-btn" aria-label="Center map on my location">
                             📍 My Location
                         </button>
-                        <button class="btn btn-icon" id="view-satellite" onclick="document.getElementById('beach-map').src = document.getElementById('beach-map').src.replace('maptype=roadmap', 'maptype=satellite')" aria-label="Switch to satellite view">
+                        <button class="btn btn-icon" id="view-satellite" onclick="toggleMapView('satellite')" aria-label="Switch to satellite view">
                             🛰️ Satellite
                         </button>
-                        <button class="btn btn-icon" id="view-terrain" onclick="document.getElementById('beach-map').src = document.getElementById('beach-map').src.replace('maptype=satellite', 'maptype=terrain')" aria-label="Switch to terrain view">
-                            🗻 Terrain
+                        <button class="btn btn-icon" id="view-roadmap" onclick="toggleMapView('roadmap')" aria-label="Switch to road view">
+                            🗺️ Road
+                        </button>
+                        <button class="btn btn-icon" id="open-gmaps" onclick="window.open('https://www.google.com/maps/place/1.381497,103.955574/@1.381497,103.955574,17z', '_blank')" aria-label="Open in Google Maps">
+                            🌐 Open Map
                         </button>
                     </div>
                 </div>

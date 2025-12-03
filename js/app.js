@@ -668,6 +668,9 @@ class ShoreSquadApp {
       // Update crew statistics
       CrewManager.updateStats();
       
+      // Initialize map functionality
+      initializeMap();
+      
       // Mark as initialized
       this.isInitialized = true;
       
@@ -1031,6 +1034,72 @@ style.textContent = `
 `;
 
 document.head.appendChild(style);
+
+// ===================================
+// Global Map Functions
+// ===================================
+
+// Toggle between different map views
+function toggleMapView(viewType) {
+  const mapFrame = document.getElementById('beach-map');
+  if (!mapFrame) return;
+  
+  const baseUrl = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.639546442087!2d103.95339731475391!3d1.3814970987041962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da3d8d0a05a851%3A0x1f7e3e0b8a0f8d0a!2sPasir%20Ris%20Beach!';
+  
+  let mapTypeParam;
+  switch (viewType) {
+    case 'satellite':
+      mapTypeParam = '5e1!3m2!1sen!2ssg!4v1701604800000!5m2!1sen!2ssg'; // Satellite view
+      break;
+    case 'roadmap':
+      mapTypeParam = '5e0!3m2!1sen!2ssg!4v1701604800000!5m2!1sen!2ssg'; // Road view
+      break;
+    default:
+      mapTypeParam = '5e0!3m2!1sen!2ssg!4v1701604800000!5m2!1sen!2ssg';
+  }
+  
+  mapFrame.src = baseUrl + mapTypeParam;
+  Utils.showToast(`Switched to ${viewType} view`, 'success');
+}
+
+// Initialize map with fallback options
+function initializeMap() {
+  const mapFrame = document.getElementById('beach-map');
+  if (!mapFrame) return;
+  
+  // Add error handling for map loading
+  mapFrame.addEventListener('error', () => {
+    console.warn('Primary map failed to load, trying fallback...');
+    
+    // Fallback to a simpler embed URL
+    mapFrame.src = 'https://maps.google.com/maps?width=100%25&amp;height=400&amp;hl=en&amp;q=1.381497,103.955574+(Pasir%20Ris%20Beach%20Cleanup)&amp;t=&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed';
+    
+    // If that fails too, show a static fallback
+    setTimeout(() => {
+      if (mapFrame.src.includes('fallback')) {
+        mapFrame.outerHTML = `
+          <div id="beach-map" class="map-fallback" style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, var(--primary-blue), var(--seafoam-green)); color: white; text-align: center; border-radius: var(--border-radius-lg);">
+            <h3>🏖️ Pasir Ris Beach Cleanup</h3>
+            <p><strong>Coordinates:</strong> 1.381497, 103.955574</p>
+            <button class="btn btn-primary" onclick="window.open('https://www.google.com/maps/place/1.381497,103.955574', '_blank')" style="margin-top: 1rem;">
+              🗺️ Open in Google Maps
+            </button>
+          </div>
+        `;
+      }
+    }, 3000);
+  });
+  
+  // Success callback
+  mapFrame.addEventListener('load', () => {
+    console.log('✅ Google Maps loaded successfully');
+    Utils.showToast('Map loaded successfully! 🗺️', 'success');
+  });
+}
+
+// Add to window for global access
+window.toggleMapView = toggleMapView;
+window.initializeMap = initializeMap;
 
 // Export for potential module usage
 if (typeof module !== 'undefined' && module.exports) {

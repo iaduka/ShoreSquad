@@ -875,6 +875,25 @@ section {
   }
 }
 
+/* Map Fallback Styles */
+.map-fallback {
+  background: var(--ocean-gradient) !important;
+  color: var(--white) !important;
+  padding: var(--space-xl);
+  text-align: center;
+  border-radius: var(--border-radius-lg);
+}
+
+.map-fallback h3 {
+  color: var(--white) !important;
+  margin-bottom: var(--space-md);
+}
+
+.map-fallback p {
+  margin-bottom: var(--space-sm);
+  opacity: 0.9;
+}
+
 /* High Contrast Mode */
 @media (prefers-contrast: high) {
   :root {
