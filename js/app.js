@@ -249,7 +249,7 @@ class WeatherService {
     }
 
     try {
-      const url = `${APP_CONFIG.api.weather}/weather?lat=${lat}&lon=${lng}&appid=${APP_CONFIG.api.weatherApiKey}&units=imperial`;
+      const url = `${APP_CONFIG.api.weather}/weather?lat=${lat}&lon=${lng}&appid=${APP_CONFIG.api.weatherApiKey}&units=metric`;
       const response = await fetch(url);
       
       if (!response.ok) {
@@ -270,7 +270,7 @@ class WeatherService {
 
   static async getForecast(lat, lng) {
     try {
-      const url = `${APP_CONFIG.api.weather}/forecast?lat=${lat}&lon=${lng}&appid=${APP_CONFIG.api.weatherApiKey}&units=imperial`;
+      const url = `${APP_CONFIG.api.weather}/forecast?lat=${lat}&lon=${lng}&appid=${APP_CONFIG.api.weatherApiKey}&units=metric`;
       const response = await fetch(url);
       
       if (!response.ok) {
@@ -291,9 +291,9 @@ class WeatherService {
       description: data.weather[0].description,
       icon: data.weather[0].icon,
       humidity: data.main.humidity,
-      windSpeed: Math.round(data.wind.speed),
+      windSpeed: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
       windDirection: data.wind.deg,
-      visibility: data.visibility ? Math.round(data.visibility / 1609.34) : null, // Convert to miles
+      visibility: data.visibility ? Math.round(data.visibility / 1000) : null, // Convert to kilometers
       location: data.name,
       timestamp: Date.now()
     };
@@ -309,19 +309,19 @@ class WeatherService {
       description: item.weather[0].description,
       icon: item.weather[0].icon,
       humidity: item.main.humidity,
-      windSpeed: Math.round(item.wind.speed)
+      windSpeed: Math.round(item.wind.speed * 3.6) // Convert m/s to km/h
     }));
   }
 
   static getMockWeatherData() {
     return {
-      temperature: 72,
+      temperature: 22, // Changed to Celsius
       description: 'partly cloudy',
       icon: '02d',
       humidity: 65,
-      windSpeed: 8,
+      windSpeed: 13, // Changed to km/h
       windDirection: 270,
-      visibility: 10,
+      visibility: 16, // Changed to kilometers
       location: 'Beach Area',
       timestamp: Date.now()
     };
@@ -332,13 +332,13 @@ class WeatherService {
     return Array.from({ length: 5 }, (_, i) => ({
       date: new Date(today.getTime() + i * 24 * 60 * 60 * 1000),
       temperature: {
-        high: Math.round(70 + Math.random() * 10),
-        low: Math.round(60 + Math.random() * 10)
+        high: Math.round(21 + Math.random() * 8), // 21-29°C range
+        low: Math.round(15 + Math.random() * 6)  // 15-21°C range
       },
       description: ['sunny', 'partly cloudy', 'cloudy', 'windy'][Math.floor(Math.random() * 4)],
       icon: '02d',
       humidity: Math.round(50 + Math.random() * 30),
-      windSpeed: Math.round(5 + Math.random() * 10)
+      windSpeed: Math.round(8 + Math.random() * 16) // 8-24 km/h range
     }));
   }
 }
@@ -736,7 +736,7 @@ class ShoreSquadApp {
             </div>
           </div>
           <div class="weather-main">
-            <span class="temperature">${current.temperature}°F</span>
+            <span class="temperature">${current.temperature}°C</span>
             <span class="description">${current.description}</span>
           </div>
           <div class="weather-details">
@@ -746,12 +746,12 @@ class ShoreSquadApp {
             </div>
             <div class="detail">
               <span class="label">Wind</span>
-              <span class="value">${current.windSpeed} mph</span>
+              <span class="value">${current.windSpeed} km/h</span>
             </div>
             ${current.visibility ? `
               <div class="detail">
                 <span class="label">Visibility</span>
-                <span class="value">${current.visibility} mi</span>
+                <span class="value">${current.visibility} km</span>
               </div>
             ` : ''}
           </div>
